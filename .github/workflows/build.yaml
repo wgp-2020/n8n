@@ -17,7 +17,9 @@ jobs:
           node-version: 22.16.0
 
       - name: Build docker image
-        run: pnpm build:docker
+        run: |
+          npm i -g pnpm
+          pnpm build:docker
 
       - name: Save image
         run: |
