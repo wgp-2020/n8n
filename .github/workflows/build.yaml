@@ -1,4 +1,4 @@
-name: Build n8n Image
+name: build-n8n
 
 on:
   workflow_dispatch:
@@ -11,16 +11,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build image
-        run: |
-          docker build -f docker/dockerfiles/Dockerfile -t n8n:custom .
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install deps
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Build docker image
+        run: pnpm build:docker
 
       - name: Save image
         run: |
-          docker save n8n:custom | gzip > n8n.tar.gz
+          docker save n8n:latest | gzip > n8n.tar.gz
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: n8n-docker-image
+          name: n8n-image
           path: n8n.tar.gz
