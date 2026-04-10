@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: actions/checkout@v4
 
       - name: Build image
         run: |
@@ -20,7 +20,7 @@ jobs:
           docker save n8n:custom | gzip > n8n.tar.gz
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: n8n-docker-image
           path: n8n.tar.gz
