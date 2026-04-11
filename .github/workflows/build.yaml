@@ -1,4 +1,4 @@
-name: build-n8n
+name: 构建Docker镜像
 
 on:
   workflow_dispatch:
@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -18,15 +17,17 @@ jobs:
 
       - name: Build docker image
         run: |
+          export NODE_OPTIONS="--max-old-space-size=6144"
           npm i -g pnpm
+          pnpm i
           pnpm build:docker
 
       - name: Save image
         run: |
-          docker save n8n:latest | gzip > n8n.tar.gz
+          docker save n8nio/n8n:local | gzip > n8n.tar.gz
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: n8n-image
+          name: n8n
           path: n8n.tar.gz
